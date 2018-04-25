@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mauricio.test2.feature">
+    package="com.example.mauricio.test2.feature"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://schemas.android.com/apk/res/android ">
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application>

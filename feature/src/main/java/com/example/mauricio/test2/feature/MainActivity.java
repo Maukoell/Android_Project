@@ -9,7 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,9 +24,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 gps.getLocation();
                 text.setText("Latitude: " + gps.getLatitude() + " Longitude: " + gps.getLongitude());
+                LatLng destination= new LatLng(210, 321);
+                LatLng origin= new LatLng(gps.getLatitude(), gps.getLongitude());
+                DirectionsResult result = DirectionsApi.newRequest(getGeoContext())                    .mode(TravelMode.DRIVING).origin(origin)                    .destination(destination).departureTime(now)                    .await();
             }
         });
-
-
     }
 }
