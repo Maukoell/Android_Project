@@ -1,58 +1,98 @@
 package com.example.mauricio.testapplication;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.List;
+import java.util.Locale;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.os.StrictMode;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.rdc.R;
+
+public class MainActivity extends Activity {
+
+    private LocationManager locationMangaer=null;
+    private LocationListener locationListener=null;
+
+    private Button getData = null;
+    private EditText start = null;
+    private EditText ziel = null;
+    private String url = null;
+    private EditText loc = null;
+
+    private static final String TAG = "Debug";
+    private Boolean flag = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        StrictMode.setThreadPolicy(policy);
+        setContentView(R.layout.activity_main);
+
+        setRequestedOrientation(ActivityInfo
+                .SCREEN_ORIENTATION_PORTRAIT);
+
+        getData = findViewById(R.id.getData);
+        start = findViewById(R.id.startort);
+        ziel = findViewById(R.id.zielort);
+        loc = findViewById(R.id.editTextLocation);
+
+        getData.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + start.getText() + "&destination=" + ziel.getText() + "&mode=transit&transit_mode=train&key=AIzaSyDwCmvGloqh5i8eL08cFWJMiWaYOPSK8B4";
+                loc.setText(retrieveURLData());
+                //loc.setText(url);
             }
         });
+
     }
 
-    public void onButtonTap(View v) {
-        Toast toast1 = Toast.makeText(getApplicationContext(),"You cheeky litle bastard!", Toast.LENGTH_LONG);
-        toast1.show();
-    }
+    public String retrieveURLData() {
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+        try {
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+            int read;
+            char[] chars = new char[1024];
+            URL urlPath = new URL(url);
+            StringBuilder buffer = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(urlPath.openStream()));
+            while ((read = reader.read(chars)) != -1) {
+                buffer.append(chars, 0, read);
+            }
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            return buffer.toString();
+
+        } catch (IOException ioe){
+            ioe.printStackTrace();
         }
 
-        return super.onOptionsItemSelected(item);
+        return null;
     }
+
 }

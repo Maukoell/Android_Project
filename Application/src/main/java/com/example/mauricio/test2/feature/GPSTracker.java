@@ -66,8 +66,6 @@ public class GPSTracker extends Service implements LocationListener {
                 // First get location from Network Provider
                 if (isNetworkEnabled) {
                     if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_COARSE_LOCATION  },
-                                GPSTracker.MY_PERMISSION_ACCESS_COURSE_LOCATION );
                     }
 
                     locationManager.requestLocationUpdates(
