@@ -2,33 +2,26 @@ package com.example.mauricio.testapplication;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
-import java.util.List;
-import java.util.Locale;
+import org.json.*;
+
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.Scanner;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.rdc.R;
 
@@ -40,8 +33,10 @@ public class MainActivity extends Activity {
     private Button getData = null;
     private EditText start = null;
     private EditText ziel = null;
-    private String url = null;
+    private URL url = null;
     private EditText loc = null;
+    private String googleUrl = null;
+
 
     private static final String TAG = "Debug";
     private Boolean flag = false;
@@ -65,31 +60,62 @@ public class MainActivity extends Activity {
         getData.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + start.getText() + "&destination=" + ziel.getText() + "&mode=transit&transit_mode=train&key=AIzaSyDwCmvGloqh5i8eL08cFWJMiWaYOPSK8B4";
-                loc.setText(retrieveURLData());
-                //loc.setText(url);
+                //googleUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + start.getText() + "&destination=" + ziel.getText() + "&mode=transit&transit_mode=train&key=AIzaSyDwCmvGloqh5i8eL08cFWJMiWaYOPSK8B4";
+                googleUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=Seefeld_Bahnhof&destination=Innsbruck_Hauptbahnhof&mode=transit&transit_mode=train&key=AIzaSyDwCmvGloqh5i8eL08cFWJMiWaYOPSK8B4";
+                try {
+                    JSONObject jsn = readJsonFromUrl(googleUrl);
+                    loc.setText(jsn.getJSONObject("route").getJSONObject("legs").getJSONObject("arrival_time").getString("text"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
             }
         });
 
     }
 
-    public String retrieveURLData() {
+    private static String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        return sb.toString();
+    }
+
+    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+        InputStream is = new URL(url).openStream();
+        try {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            String jsonText = readAll(rd);
+            JSONObject json = new JSONObject(jsonText);
+            return json;
+        } finally {
+            is.close();
+        }
+    }
+
+
+    public JSONObject retrieveURLData() {
 
         try {
 
-            int read;
-            char[] chars = new char[1024];
-            URL urlPath = new URL(url);
-            StringBuilder buffer = new StringBuilder();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(urlPath.openStream()));
-            while ((read = reader.read(chars)) != -1) {
-                buffer.append(chars, 0, read);
-            }
-
-            return buffer.toString();
-
+            Scanner scan = new Scanner(url.openStream());
+            String str = new String();
+            while (scan.hasNext())
+                str += scan.nextLine();
+            scan.close();
+            // build a JSON object
+            JSONObject obj = new JSONObject(str);
+            if (! obj.getString("status").equals("OK"))
+                return obj;
         } catch (IOException ioe){
             ioe.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         return null;
