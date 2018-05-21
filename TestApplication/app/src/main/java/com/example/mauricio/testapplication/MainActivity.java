@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.rdc.R;
 
@@ -34,7 +35,7 @@ public class MainActivity extends Activity {
     private EditText start = null;
     private EditText ziel = null;
     private URL url = null;
-    private EditText loc = null;
+    private TextView loc = null;
     private String googleUrl = null;
 
 
@@ -60,11 +61,19 @@ public class MainActivity extends Activity {
         getData.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                //googleUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + start.getText() + "&destination=" + ziel.getText() + "&mode=transit&transit_mode=train&key=AIzaSyDwCmvGloqh5i8eL08cFWJMiWaYOPSK8B4";
-                googleUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=Seefeld_Bahnhof&destination=Innsbruck_Hauptbahnhof&mode=transit&transit_mode=train&key=AIzaSyDwCmvGloqh5i8eL08cFWJMiWaYOPSK8B4";
+                googleUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=" + start.getText() + "&destination=" + ziel.getText() + "&mode=transit&transit_mode=train&key=AIzaSyDwCmvGloqh5i8eL08cFWJMiWaYOPSK8B4";
+                //googleUrl = "https://maps.googleapis.com/maps/api/directions/json?origin=Seefeld_Bahnhof&destination=Innsbruck_Hauptbahnhof&mode=transit&transit_mode=train&key=AIzaSyDwCmvGloqh5i8eL08cFWJMiWaYOPSK8B4";
                 try {
                     JSONObject jsn = readJsonFromUrl(googleUrl);
-                    loc.setText(jsn.getJSONObject("route").getJSONObject("legs").getJSONObject("arrival_time").getString("text"));
+                    JSONArray arr = jsn.getJSONArray("routes");
+                    jsn = arr.getJSONObject(0);
+                    JSONArray arr2 = jsn.getJSONArray("legs");
+                    JSONObject arr3 = arr2.getJSONObject(0);
+                    JSONObject arr4 = arr3.getJSONObject("departure_time");
+                    String s = arr4.getString("text");
+
+                    loc.setText(s);
+                    //loc.setText(jsn.getJSONObject("routes").getJSONObject("legs").getJSONObject("arrival_time").getString("text"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
