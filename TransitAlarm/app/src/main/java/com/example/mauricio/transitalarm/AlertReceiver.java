@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -31,7 +32,6 @@ public class AlertReceiver extends BroadcastReceiver {
     private String timeInput;
     private Calendar dep;
     private Calendar go;
-    private SQLiteDatabase db;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -49,8 +49,9 @@ public class AlertReceiver extends BroadcastReceiver {
                 .setContentText("Test Notification 123 @ !§%")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
         final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        String depString = dep.get(Calendar.HOUR_OF_DAY) + ":" + dep.get(Calendar.MINUTE) ;
-        String goString = go.get(Calendar.HOUR_OF_DAY) + ":" + go.get(Calendar.MINUTE);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
+        String depString = dateFormatter.format(dep);
+        String goString = dateFormatter.format(go);
         mBuilder.setContentTitle("Dein Zug fährt um " + depString + " ab");
         mBuilder.setContentText("Geh um " + goString +" los um deinen Zug zu erreichen");
         notificationManager.notify(1, mBuilder.build());
@@ -79,6 +80,7 @@ public class AlertReceiver extends BroadcastReceiver {
             JSONObject arr13 = arr12.getJSONObject(0);
             JSONObject arr14 = arr13.getJSONObject("duration");
             String s1 = arr14.getString("text");
+            s1.trim();
             String[] parts1 = s1.split(" ");
             int min = Integer.parseInt(parts1[0]);
 
@@ -90,7 +92,6 @@ public class AlertReceiver extends BroadcastReceiver {
             JSONObject arr24 = arr23.getJSONObject("departure_time");
             Long s2 = arr24.getLong("value");
             Date d2 = new Date(s2*1000);
-
             cal.set(Calendar.MINUTE, d2.getMinutes());
             cal.set(Calendar.HOUR, d2.getHours());
             dep = cal;
