@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "755549489452",
+    "firebase_url": "https://zug-alarm.firebaseio.com",
+    "project_id": "zug-alarm",
+    "storage_bucket": "zug-alarm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755549489452:android:d0b228fb2e45962e",
+        "android_client_info": {
+          "package_name": "com.example.mauricio.transitalarm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755549489452-gkqjpfh3pqse0625rs84ksheh9p4kb8l.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "755549489452-gkqjpfh3pqse0625rs84ksheh9p4kb8l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp66CclDT0Kb6wcZBJ7h4Mdv1aI2PwYLs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

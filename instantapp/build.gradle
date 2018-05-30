@@ -1,6 +1,0 @@
-apply plugin: 'com.android.instantapp'
-dependencies {
-    implementation project(':Application')
-    implementation project(':base')
-    compile 'com.google.android.gms:play-services-location:10.+’
-}
